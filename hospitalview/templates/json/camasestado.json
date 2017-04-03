@@ -1,0 +1,16 @@
+{% spaceless %}
+{  "results":
+    [{% for c in camas %}
+        {
+            "id": "{{ c.id }}",
+            "nombre": "{{ c.nombre }}",
+            "descripcion": "{{ c.descripcion }}",
+            "activo": "{{ c.activo }}",
+            "reservado": "{{ c.reservado }}",
+            "zona": "{{ c.id_zona }}",
+            "estado": "{{ c.id_estado }}"
+        }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+    ]
+}
+{% endspaceless %}

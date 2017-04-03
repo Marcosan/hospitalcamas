@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Twitter Bootstrap : Modals </title>
+        <link rel="stylesheet"
+            href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+        <link rel="stylesheet"
+            href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
+        <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+    </head>
+    <script>
+        $(document).ready(function(){
+          $('.open-modal').click(function(){
+            $('#DemoModal').modal('show');
+          }); 
+        });
+    </script>
+    <style>
+        .DemoModal{
+        margin:20px;
+        }
+        .dummy {
+        margin-top: 100%;
+        }
+        .dummy a{
+        color: rgb(242, 242, 242);
+        font-size: 45px;
+        background-color: rgb(255, 255, 255);
+        text-shadow: rgb(0, 0, 0) 0px 2px 7px;
+        }
+        .thumbnailx {
+        position: absolute;
+        top: 15px;
+        bottom: 30px;
+        left: 15px;
+        right: 15px;
+        text-align:center;
+        padding-top:calc(50% - 30px);
+        -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.93);
+        -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.93);
+        box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.93);
+        }
+        .thumbnailx2 {
+        position: absolute;
+        top: 0px;
+        bottom: 20px;
+        left: 0px;
+        right: 15px;
+        font-size: 30px;
+        text-align:center;
+        padding-top:calc(40% - 20px);
+        -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.93);
+        -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.93);
+        box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.93);
+        }
+        .thumbnailx2 a{
+        color: rgb(242, 242, 242);
+        font-size: 20px;
+        background-color: rgb(255, 255, 255);
+        text-shadow: rgb(0, 0, 0) 0px 2px 7px;
+        }
+        .thumbnailxx {
+        position: absolute;
+        top: 5px;
+        bottom: 0px;
+        left: 15px;
+        right: 15px;
+        text-align:center;
+        padding-top:calc(50% - 30px);
+        -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.93);
+        -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.93);
+        box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.93);
+        }
+        #estados {
+        color: rgb(120, 120, 120);
+        font-size: 22px;
+        background-color: rgb(255, 255, 255);
+        text-shadow: rgb(232, 232, 232) 2px 1px 0px;
+        }
+        #titulo{
+        color: rgb(117, 108, 108);
+        font-size: 37px;
+        background-color: rgb(255, 255, 255);
+        text-shadow: rgb(255, 232, 232) 2px 1px 0px;
+        }
+        #subtitulo{
+        color: rgb(117, 108, 108);
+        font-size: 30px;
+        background-color: rgb(255, 255, 255);
+        text-shadow: rgb(255, 232, 232) 2px 1px 0px;
+        }
+    </style>
+
+    <script type="text/javascript">
+
+    var estados;
+    var zonas;
+    var camas;
+    var contadorZonas = [];
+    var urlEstado = "/hospitalview/zonasjson";
+
+    $(document).ready(function() {
+        inicializar();
+        mostrarZonas();
+        mostrarEstados();
+        tiempoReal();
+    });
+
+    function tiempoReal(){
+        setInterval(actualizar, 2000);
+        //setInterval(contador, 1000);
+    }
+    function actualizar(){
+        actualizarEstado();
+        //actualizarDatos();
+    }
+    function actualizarEstado(){
+        $.getJSON(urlEstado, function(datos){
+            var zonasLista = datos.zonas_cont
+            for (zone in zonasLista) {
+                var num = zonasLista[zone];
+                var aLeft = document.getElementById("cont"+zone);
+                aLeft.innerHTML = num;
+            }
+        });
+        $.getJSON("/hospitalview/contestadosjson/", function(datos){
+            var estadosLista = datos.estados_cont
+            for (est in estadosLista) {
+                var num = estadosLista[est];
+                var aCont = document.getElementById("estCont"+est);
+                aCont.innerHTML = num;
+            }
+        });
+    }
+
+    function inicializar(){
+        var i=0;
+        estados = {{% for est in estados %}
+                "{{ est.id }}":{
+                    "visible": true,
+                    "nombre":"{{est.nombre}}",
+                    "descripcion":"{{est.descripcion}}",
+                    "color":"{{est.color}}",
+                }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        };
+        //habitaciones = 
+        zonas = {{% for z in zonas %}
+                "{{ z.id }}":{
+                    "visible": true,
+                    "nombre":"{{z.nombre}}",
+                    "descripcion":"{{z.descripcion}}",
+                    "piso":"{{z.piso}}",
+                }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        };
+        //urlEstado = "/hospitalview/camasjson/?zona=" + zona;
+        //var tituloDiv = document.getElementById("titulo");
+        //tituloDiv.innerHTML = zona_actual.descripcion;
+        
+        camas = {{% for c in camas %}
+                "{{ c.id }}":{
+                    "visible": true,
+                    "nombre":"{{c.nombre}}",
+                    "descripcion":"{{c.descripcion}}",
+                    "activo":"{{c.activo}}",
+                    "reservado":"{{c.reservado}}",
+                    "estado":"{{c.id_estado}}",
+                }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        };
+        
+        //camas = {{ cama_estados.fecha_inicio }};
+    }    
+
+    function mostrarZonas(){
+        var divContainer = document.getElementById("contenedorZonas");
+        
+        for (var n in zonas) {
+            //Crear elementos
+            var c = zonas[n];
+            var nombreZona = String(c.nombre);
+            contadorZonas[nombreZona] = 0;
+
+            var divZona = document.createElement("div");
+            var divDummy = document.createElement("div");
+            var divLeft = document.createElement("div");
+            var divRigth = document.createElement("div");
+            var divCaption = document.createElement("div");
+            var aLeft = document.createElement("a");
+            var aRigth = document.createElement("a");
+            var inRigth = document.createElement("input");
+            var aDummy = document.createElement("a");
+            var aCaption = document.createElement("a");
+            var txtDummy = document.createTextNode(nombreZona);
+            var txtCaption = document.createTextNode("Image title");
+
+            divZona.className = "col-xs-12 col-sm-4 col-md-3 col-lg-2 ";
+            divDummy.className = "dummy";
+            divDummy.id = "divDummyEstado"+nombreZona;
+            divDummy.setAttribute("style","background-color: lightblue;");
+            divLeft.setAttribute("style","background-color: #8AFFFE;height: 30px;width: 30px;  position: absolute;left: 15px;top: 15px;z-index: 1;");
+            divRigth.setAttribute("style", "background-color: #8AFFFE;height: 30px;width: 30px;  position: absolute;right: 20px;top: 15px;z-index: 1;");
+            divRigth.setAttribute("onclick","funcionModal();");
+            aLeft.href="/hospitalview/camasedit/?zona=" + n;
+            aLeft.className = "thumbnailx2";
+            aLeft.setAttribute("style", "height: 30px;width: 30px;background-color: #8AFFFE; font-size: 20px;");
+            aLeft.id = "cont" + nombreZona
+            aLeft.target="_blank"
+            
+            aRigth.href="#x";
+            aRigth.className = "thumbnailx2";
+            aRigth.setAttribute("style", "height: 30px;width: 30px;background-color: #8AFFFE; font-size: 20px;")
+            inRigth.type = "button";
+            inRigth.className = "btn btn-lg btn-primary open-modal thumbnailx2";
+            inRigth.setAttribute("style","loat:right;height: 38px;width: 38px;");
+
+            aDummy.href = "/hospitalview/camas/?zona=" + n;
+            aDummy.className = "thumbnailx";
+            aDummy.setAttribute("style","background-color: #FF9E00;");
+            aDummy.target="_blank"
+            
+            divCaption.className = "caption";
+            aCaption.href = "#"
+            //iEdEv.setAttribute("onclick","flotante(1);");
+            
+            aDummy.appendChild(txtDummy);
+            aCaption.appendChild(txtCaption);
+            divCaption.appendChild(aCaption);
+            divLeft.appendChild(aLeft);
+            aRigth.appendChild(inRigth);
+            divRigth.appendChild(aRigth);
+            divDummy.appendChild(divLeft);
+            divDummy.appendChild(divRigth);
+            divDummy.appendChild(aDummy);
+            divZona.appendChild(divDummy);
+            divZona.appendChild(divCaption);
+
+            divContainer.appendChild(divZona);
+      }
+      
+    }
+
+    function mostrarEstados(){
+        var divContainer = document.getElementById("contenedorEstados");
+        
+        for (var n in estados) {
+            //Crear elementos
+            var c = estados[n];
+            //var col = getColorEstado(c.estado);
+            var nombreEstado = String(c.nombre);
+
+            var divEstado = document.createElement("div");
+            var divCont = document.createElement("div");
+            var divColor = document.createElement("div");
+            var divNombre = document.createElement("div");
+            var divContSub = document.createElement("div");
+            var divColorSub = document.createElement("div");
+            var divNombreSub = document.createElement("div");
+            var aCont = document.createElement("a");
+            var aColor = document.createElement("a");
+            var aNombre = document.createElement("a");
+            var txtCont = document.createTextNode("12");
+            var txtNombre = document.createTextNode(nombreEstado);
+            
+            divEstado.className = "col-sm-16";
+            divEstado.setAttribute("style","padding-top: 30px; margin-top:50px");
+            divCont.className = "col-xs-6 col-sm-6 col-md-12 col-lg-6";
+            divCont.setAttribute("style","left:0px");
+            divContSub.className = "caption";
+            aCont.href = "#";
+            aCont.id = "estCont"+nombreEstado;
+            
+            divColor.className = "col-xs-6 col-sm-6 col-md-8 col-lg-6";
+            divColorSub.className = "dummy";
+            divColorSub.setAttribute("style","background-color: lightblue;");
+            aColor.href = "#";
+            aColor.className = "thumbnailxx";
+            aColor.setAttribute("style","height: 40px; width: 40px; top:-3px;");
+            aColor.style.backgroundColor = c.color;
+
+            divNombre.className = "col-xs-6 col-sm-6 col-md-4 col-lg-6";
+            divNombre.setAttribute("style","left:70px");
+            divNombreSub.className = "caption";
+            aNombre.href = "#";
+            aNombre.id = "estados";
+
+            aCont.appendChild(txtCont);
+            divContSub.appendChild(aCont);
+            divCont.appendChild(divContSub);
+
+            divColorSub.appendChild(aColor);
+            divColor.appendChild(divColorSub);
+
+            aNombre.appendChild(txtNombre);
+            divNombreSub.appendChild(aNombre);
+            divNombre.appendChild(divNombreSub);
+
+            divEstado.appendChild(divCont);
+            divEstado.appendChild(divColor);
+            divEstado.appendChild(divNombre);
+
+            divContainer.appendChild(divEstado);
+        }
+    }
+    //function funcionModal(id_cama,nombreCama,estado_act){
+    function funcionModal(){
+        //mostrarFlotante(id_cama,nombreCama,estado_act,siguienteEstado(estado_act));
+        $('#DemoModal').modal('show');
+    }
+
+    </script>
+
+    <body>
+        <div class="DemoModal">
+        <!-- Launch Button -->
+        <!-- Modal Contents -->
+        <div id="DemoModal" class="modal fade">
+            <!-- class modal and fade -->
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!-- HEADER -->     
+                        <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">X</button>
+                        <h4 class="modal-title">Estados</h4>
+                    </div>
+                    <div class="modal-body">
+                        <!-- ESTADOS -->
+                        <div id="contenedorEstados" class="col-xs-12 col-sm-4 col-md-3 col-lg-2" style="left:100px">
+                        </div>
+                        <div class="modal-footer">
+                            <!--
+                            <button type="button" class="btn btn-primary" >Aceptar</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            -->
+                        </div>
+                    </div>
+                    <!-- / .modal-content -->
+                </div>
+                <!-- / .modal-dialog -->
+            </div>
+            <!-- / .modal -->
+        </div>
+
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="page-header">
+                        <h1 id="titulo">ESTADO DE CAMAS PENSIONADO DE PRIMERA CONVENIO IESS</h1>
+                        <h2 id="subtitulo">ZONAS</h2>
+                        <p>
+                            <!--Posted by <span class="glyphicon glyphicon-user"></span> 
+                                <a href="#">Matthijs Jansen</a> on -->
+                            <span class="glyphicon glyphicon-time"></span> 12 January 2015 10:00 am
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+            <center>
+                <div class="col-sm-12">
+                    <div class="col-xs-12 col-sm-8 col-md-9 col-lg-10" id="contenedorZonas">
+                        
+                    </div>
+                </div>
+                <!-- /.row -->
+            </center>
+            <hr>
+            <footer class="margin-tb-3">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p>Copyright &copy; </p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </body>
+</html>

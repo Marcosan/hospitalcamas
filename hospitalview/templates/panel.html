@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Indicadores Hospital León Becerra</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="/static/css/simple-sidebar.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    
+    <!-- Style canvas -->
+    <style>
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+    </style>
+
+    <script type="text/javascript">
+        window.onload = function() {
+            graficar_tpe();
+            graficar_tpcd();
+            graficar_tpld();
+            graficar_ihc();
+            graficar_fe();
+            graficar_irc();
+            graficar_put();
+            graficar_is();
+            graficar_pis();
+            graficar_pphc();
+
+            var divGraficos = document.getElementById("page-content-wrapper");
+
+            for (var i = 0; i < divGraficos.childElementCount; i++) {
+                divGraficos.children[i].style.display = 'none';
+            }
+        }
+        function graficaSelec(opcion){
+            var aOp = document.getElementById("btn_"+opcion);
+            var divGraf = document.getElementById("div_"+opcion);
+            var divLista = document.getElementById("lista_graficos");
+            var divGraficos = document.getElementById("page-content-wrapper");
+            
+            for (var i = 0; i < divLista.childElementCount; i++) {
+                divLista.children[i].setAttribute("class", "list-group-item");
+
+            }
+            aOp.setAttribute("class", "list-group-item active");
+
+            for (var i = 0; i < divGraficos.childElementCount; i++) {
+                divGraficos.children[i].style.display = 'none';
+            }
+            divGraf.style.display = 'block';
+            
+            if (opcion == "egresos") graficar_tpe();
+            else if (opcion == "desocupada") graficar_tpcd();
+            /*else if (opcion == "limpieza") graficar_tpld();
+            else if (opcion == "habilitacion") graficar_ihc();
+            else if (opcion == "frec_eg") graficar_fe();
+            else if (opcion == "rotacion") graficar_irc();
+            else if (opcion == "util_tot") graficar_put();
+            else if (opcion == "sustitucion") graficar_is();
+            else if (opcion == "prop_sust") graficar_pis();
+            else if (opcion == "prop_habil") graficar_pphc();
+            */
+        }
+    </script>
+    <!-- Graficas JS -->
+    <script src="/static/js/chart/Chart.bundle.js"></script>
+    <script src="/static/js/graficas/t_prom_egreso.js"></script>
+    <script src="/static/js/graficas/t_prom_cama_des.js"></script>
+    <script src="/static/js/graficas/t_prom_lim_desin.js"></script>
+    <script src="/static/js/graficas/interv_habit_cama.js"></script>
+    <script src="/static/js/graficas/frecuencia_egresos.js"></script>
+    <script src="/static/js/graficas/ind_rotacion_camas.js"></script>
+    <script src="/static/js/graficas/porc_util_total.js"></script>
+    <script src="/static/js/graficas/intervalo_sust.js"></script>
+    <script src="/static/js/graficas/prop_interv_sust.js"></script>
+    <script src="/static/js/graficas/prop_proc_hab_cama.js"></script>
+    
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <a href="#">
+                        Indicadores
+                    </a>
+                </li>
+                <div class="container" style="width: 97%">
+                <div class="list-group" id="lista_graficos">
+                    <a href="#" class="list-group-item active" id="btn_egresos" onclick="graficaSelec('egresos')">
+                      <h4 class="list-group-item-heading">Tiempo promedio de egreso<span class="badge">12</span></h4>
+                      <p class="list-group-item-text">Tipo de gráfica</p>
+                    </a>
+                    <a href="#" class="list-group-item" id="btn_desocupada" onclick="graficaSelec('desocupada')">
+                      <h4 class="list-group-item-heading">Tiempo promedio de cama desocupada</h4>
+                      <p class="list-group-item-text">List Group Item Text</p>
+                    </a>
+                    <a href="#" class="list-group-item" id="btn_limpieza" onclick="graficaSelec('limpieza')">
+                      <h4 class="list-group-item-heading">Tiempo promedio de limpieza y desinfección</h4>
+                      <p class="list-group-item-text">List Group Item Text</p>
+                    </a>
+                    <a href="#" class="list-group-item" id="btn_habilitacion" onclick="graficaSelec('habilitacion')">
+                      <h4 class="list-group-item-heading">Intervalo para habilitación de cama</h4>
+                      <p class="list-group-item-text">Tipo de gráfica</p>
+                    </a>
+                    <a href="#" class="list-group-item" id="btn_frec_eg" onclick="graficaSelec('frec_eg')">
+                      <h4 class="list-group-item-heading">Frecuencia de egresos</h4>
+                      <p class="list-group-item-text">Tipo de gráfica</p>
+                    </a>
+                    <a href="#" class="list-group-item" id="btn_rotacion" onclick="graficaSelec('rotacion')">
+                      <h4 class="list-group-item-heading">Indice de rotación de camas</h4>
+                      <p class="list-group-item-text">Tipo de gráfica</p>
+                    </a>
+                    <a href="#" class="list-group-item" id="btn_util_tot" onclick="graficaSelec('util_tot')">
+                      <h4 class="list-group-item-heading">Porcentaje de utilización total</h4>
+                      <p class="list-group-item-text">Tipo de gráfica</p>
+                    </a>
+                    <a href="#" class="list-group-item" id="btn_sustitucion" onclick="graficaSelec('sustitucion')">
+                      <h4 class="list-group-item-heading">Intervalo de sustitución</h4>
+                      <p class="list-group-item-text">Tipo de gráfica</p>
+                    </a>
+                    <a href="#" class="list-group-item" id="btn_prop_sust" onclick="graficaSelec('prop_sust')">
+                      <h4 class="list-group-item-heading">Proporción de intervalo de sustitución</h4>
+                      <p class="list-group-item-text">Tipo de gráfica</p>
+                    </a>
+                    <a href="#" class="list-group-item" id="btn_prop_habil" onclick="graficaSelec('prop_habil')">
+                      <h4 class="list-group-item-heading">Proporción de proceso de habilitación de cama</h4>
+                      <p class="list-group-item-text">Tipo de gráfica</p>
+                    </a>
+                </div>
+
+                </div>
+                
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <div class="row">
+            <div class="col-lg-12">
+                <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+            </div>
+        </div>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+        <!--
+            <div class="container-fluid">
+
+                <div style="width: 100%">
+                    <canvas id="canvas"></canvas>
+                </div>
+                <button id="randomizeData_tpe">Randomize Data</button>
+
+                
+                <div class="row">
+                    <div class="col-lg-12">
+                        <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+                    </div>
+                </div>
+            </div> -->
+            <!--
+            <div class="container-fluid">
+                
+                <div style="width:100%;">
+                    <canvas id="c_habit_cama"></canvas>
+                </div>
+                <br>
+                <br>
+                <button id="randomizeData">Randomize Data</button>
+                <button id="addData">Add Data</button>
+                <button id="removeData">Remove Data</button>
+
+                <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+            </div>
+            -->
+            <div class="container-fluid" id="div_egresos">
+                <div id="c_egresos"> </div>
+            </div>
+            
+            <div class="container-fluid" id="div_desocupada">
+                <!-- <div id="c_desocupada"> </div> -->
+                <canvas id="c_desocupada"></canvas>
+                <br>
+                
+                <button id="randomizeData">Randomize Data</button>
+                <button id="addDataset">Add Dataset</button>
+                <button id="removeDataset">Remove Dataset</button>
+                <button id="addData" onclick="addData()">Add Data</button>
+                <button id="removeData">Remove Data</button>
+            </div>
+            
+            <div class="container-fluid" id="div_limpieza">
+                <div id="c_limpieza"> </div>
+            </div>
+            <div class="container-fluid" id="div_habilitacion">
+                <div id="c_habilitacion"> </div>
+            </div>
+            <div class="container-fluid" id="div_frec_eg">
+                <div id="c_frec_eg"> </div>
+            </div>
+            <div class="container-fluid" id="div_rotacion">
+                <div id="c_rotacion"> </div>
+            </div>
+            <div class="container-fluid" id="div_util_tot">
+                <div id="c_util_tot"> </div>
+            </div>
+            <div class="container-fluid" id="div_sustitucion">
+                <div id="c_sustitucion"> </div>
+            </div>
+            <div class="container-fluid" id="div_prop_sust">
+                <div id="c_prop_sust"> </div>
+            </div>
+            <div class="container-fluid" id="div_prop_habil">
+                <div id="c_prop_habil"> </div>
+            </div>
+
+        </div>
+        
+        <!-- /#page-content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="/static/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/static/js/bootstrap.min.js"></script>
+
+    <!-- Menu Toggle Script -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    </script>
+
+    <script src="/static/js/highcharts/highcharts.js"></script>
+    <script src="/static/js/highcharts/exporting.js"></script>
+
+</body>
+
+</html>
